@@ -1,39 +1,105 @@
-google.charts.load('current', {'packages':['gantt']});
+google.charts.load("current", { packages: ["gantt"] });
 google.charts.setOnLoadCallback(drawChart);
 
 function daysToMilliseconds(days) {
-    return days * 24 * 60 * 60 * 1000;
+  return days * 24 * 60 * 60 * 1000;
 }
 
+function daysInWeek(weeks) {
+  return weeks * 7;
+}
+
+const getMathPlan = () => {
+  let planData = new google.visualization.DataTable();
+  planData.addColumn("string", "Task ID");
+  planData.addColumn("string", "Task Name");
+  planData.addColumn("date", "Start Date");
+  planData.addColumn("date", "End Date");
+  planData.addColumn("number", "Duration");
+  planData.addColumn("number", "Percent Complete");
+  planData.addColumn("string", "Dependencies");
+
+  planData.addRows([
+    [
+      "KS3HighLevel",
+      "KS3 High Level",
+      new Date("2018-09-10"),
+      new Date("2018-09-30"),
+      null,
+      0,
+      null
+    ],
+    [
+      "RulerCompass",
+      "Ruler and Compass",
+      new Date("2018-10-01"),
+      new Date("2018-10-21"),
+      null,
+      0,
+      "KS3HighLevel"
+    ],
+    [
+      "CGP13",
+      "CGP 13+",
+      new Date("2018-10-22"),
+      new Date("2018-12-29"),
+      null,
+      0,
+      "RulerCompass"
+    ],
+    [
+      "ISEB13",
+      "ISEB 13+",
+      new Date("2019-03-03"),
+      new Date("2019-05-05"),
+      null,
+      0,
+      "CGP13"
+    ],
+    [
+      "Shanghai7",
+      "Shanghai Math Project 7",
+      new Date("2018-09-10"),
+      new Date("2018-10-28"),
+      null,
+      0,
+      null
+    ],
+    [
+      "Shanghai8",
+      "Shanghai Math Project 8",
+      new Date("2018-10-29"),
+      new Date("2019-05-05"),
+      null,
+      0,
+      "Shanghai7"
+    ]
+  ]);
+
+  return planData;
+};
+
 function drawChart() {
+  const options = {
+    height: 275,
+    gantt: {
+      criticalPathEnabled: true,
+      criticalPathStyle: {
+        stroke: "#e64a19",
+        strokeWidth: 5
+      },
+      arrow: {
+        angle: 100,
+        width: 5,
+        color: "green",
+        radius: 0
+      }
+    }
+  };
 
-    var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Task ID');
-    data.addColumn('string', 'Task Name');
-    data.addColumn('date', 'Start Date');
-    data.addColumn('date', 'End Date');
-    data.addColumn('number', 'Duration');
-    data.addColumn('number', 'Percent Complete');
-    data.addColumn('string', 'Dependencies');
+  const chart = new google.visualization.Gantt(
+    document.getElementById("math_chart_div")
+  );
 
-    data.addRows([
-    ['Research', 'Find sources',
-        new Date(2015, 0, 1), new Date(2015, 0, 5), null,  100,  null],
-    ['Write', 'Write paper',
-        null, new Date(2015, 0, 9), daysToMilliseconds(3), 25, 'Research,Outline'],
-    ['Cite', 'Create bibliography',
-        null, new Date(2015, 0, 7), daysToMilliseconds(1), 20, 'Research'],
-    ['Complete', 'Hand in paper',
-        null, new Date(2015, 0, 10), daysToMilliseconds(1), 0, 'Cite,Write'],
-    ['Outline', 'Outline paper',
-        null, new Date(2015, 0, 6), daysToMilliseconds(1), 100, 'Research']
-    ]);
-
-    var options = {
-    height: 275
-    };
-
-    var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
-
-    chart.draw(data, options);
+  chart.draw(getMathPlan(), options);
 }
